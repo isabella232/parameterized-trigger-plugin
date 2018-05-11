@@ -27,7 +27,8 @@ package hudson.plugins.parameterizedtrigger;
 
 import hudson.EnvVars;
 import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
+import hudson.model.Run;
+import hudson.model.Job;
 import hudson.model.EnvironmentContributingAction;
 import hudson.model.Result;
 import java.util.ArrayList;
@@ -201,13 +202,13 @@ public class BuildInfoExporterAction implements EnvironmentContributingAction {
    * @return a list of builds that are triggered by this build. May contains null if a project or a build is deleted.
    */
   @Exported(visibility = 1)
-  public List<AbstractBuild<?, ?>> getTriggeredBuilds() {
+  public List<Run<?, ?>> getTriggeredBuilds() {
 
-    List<AbstractBuild<?, ?>> builds = new ArrayList<AbstractBuild<?, ?>>();
+    List<Run<?, ?>> builds = new ArrayList<Run<?, ?>>();
 
     for (BuildReference br : this.builds) {
-        AbstractProject<?, ? extends AbstractBuild<?, ?>> project =
-              Jenkins.getInstance().getItemByFullName(br.projectName, AbstractProject.class);
+        Job<?, ? extends Run<?, ?>> project =
+              Jenkins.getInstance().getItemByFullName(br.projectName, Job.class);
         if (br.buildNumber != 0) {
             builds.add((project != null)?project.getBuildByNumber(br.buildNumber):null);
         }
@@ -223,13 +224,13 @@ public class BuildInfoExporterAction implements EnvironmentContributingAction {
    * @return List of Projects that are triggered by this build. May contains null if a project is deleted.
    */
   @Exported(visibility = 1)
-  public List<AbstractProject<?, ?>> getTriggeredProjects() {
-    List<AbstractProject<?, ?>> projects = new ArrayList<AbstractProject<?, ?>>();
+  public List<Job<?, ?>> getTriggeredProjects() {
+    List<Job<?, ?>> projects = new ArrayList<Job<?, ?>>();
 
     for (BuildReference br : this.builds) {
         if (br.buildNumber == 0) {
-            AbstractProject<?, ? extends AbstractBuild<?, ?>> project =
-                    Jenkins.getInstance().getItemByFullName(br.projectName, AbstractProject.class);
+            Job<?, ? extends Run<?, ?>> project =
+                    Jenkins.getInstance().getItemByFullName(br.projectName, Job.class);
             projects.add(project);
         }
     }
